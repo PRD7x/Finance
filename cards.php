@@ -87,41 +87,43 @@ while($row = $result_despesas->fetch_assoc()) {
                     <button class="btn-primary" style="background:#1e293b; border:1px solid #334155;" onclick="abrirModalDespesaCartao()">+ Adicionar Despesa</button>
                 </div>
             <?php else: ?>
-                <table class="tabela-dados">
-                    <thead><tr><th>Descrição</th><th>Cartão</th><th>Categoria</th><th>Valor Total</th><th>Parcelas</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead>
-                    <tbody>
-                        <?php foreach($despesas_pendentes as $desp): ?>
-                        <tr>
-                            <td><strong><?php echo htmlspecialchars($desp['descricao']); ?></strong></td>
-                            <td><?php echo htmlspecialchars($desp['nome_cartao']); ?></td>
-                            <td><?php echo htmlspecialchars($desp['categoria']); ?></td>
-                            <td style="font-weight:bold;">R$ <?php echo number_format($desp['valor_total'], 2, ',', '.'); ?></td>
-                            <td><?php echo htmlspecialchars($desp['parcelas']); ?></td>
-                            <td><span style="background:rgba(245, 158, 11, 0.2); color:#fbbf24; padding:4px 8px; border-radius:4px; font-size:12px;"><?php echo $desp['status']; ?></span></td>
-                            <td><?php echo date('d/m/Y', strtotime($desp['data_compra'])); ?></td>
-                            <td>
-                                <?php
-                                    $parcelas_str = $desp['parcelas'];
-                                    $parcelas_pagas = isset($desp['parcelas_pagas']) ? (int)$desp['parcelas_pagas'] : 0;
-                                    $total_parcelas = 1;
-                                    if (preg_match('/^(\d+)/', trim($parcelas_str), $matches)) {
-                                        $total_parcelas = max(1, intval($matches[1]));
-                                    }
-                                    
-                                    if ($total_parcelas > 1) {
-                                        $valor_parcela = $desp['valor_total'] / $total_parcelas;
-                                        echo '<button type="button" class="btn-icon" style="background:none; border:none; color:#10b981; cursor:pointer;" title="Adiantar Parcela" onclick="abrirModalAdiantarParcela(' . $desp['id'] . ', \'' . htmlspecialchars(addslashes($desp['descricao'])) . '\', ' . $valor_parcela . ', ' . ($parcelas_pagas + 1) . ', ' . $total_parcelas . ')"><i data-feather="dollar-sign"></i></button>';
-                                    } else {
-                                        echo '<a href="pay_card_expense.php?id=' . $desp['id'] . '" class="btn-icon" style="background:none; border:none; color:#10b981; cursor:pointer;" title="Marcar como Quitada"><i data-feather="check-circle"></i></a>';
-                                    }
-                                ?>
-                                <button class="btn-icon" style="background:none; border:none; color:#a0aec0; cursor:pointer;" title="Editar" onclick="abrirModalEdicaoDespesaCartao(<?php echo $desp['id']; ?>, '<?php echo htmlspecialchars(addslashes($desp['descricao'])); ?>', <?php echo $desp['cartao_id']; ?>, '<?php echo htmlspecialchars(addslashes($desp['categoria'])); ?>', '<?php echo $desp['data_compra']; ?>', <?php echo $desp['valor_total']; ?>, '<?php echo htmlspecialchars(addslashes($desp['parcelas'])); ?>')"><i data-feather="edit-2"></i></button>
-                                <a href="delete_card_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" style="background:none; border:none; color:#a0aec0; cursor:pointer;" title="Excluir" onclick="return confirm('Excluir esta despesa? O limite será restaurado.');"><i data-feather="trash-2"></i></a>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="container-tabela">
+                    <table class="tabela-dados">
+                        <thead><tr><th>Descrição</th><th>Cartão</th><th>Categoria</th><th>Valor Total</th><th>Parcelas</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead>
+                        <tbody>
+                            <?php foreach($despesas_pendentes as $desp): ?>
+                            <tr>
+                                <td><strong><?php echo htmlspecialchars($desp['descricao']); ?></strong></td>
+                                <td><?php echo htmlspecialchars($desp['nome_cartao']); ?></td>
+                                <td><?php echo htmlspecialchars($desp['categoria']); ?></td>
+                                <td style="font-weight:bold;">R$ <?php echo number_format($desp['valor_total'], 2, ',', '.'); ?></td>
+                                <td><?php echo htmlspecialchars($desp['parcelas']); ?></td>
+                                <td><span style="background:rgba(245, 158, 11, 0.2); color:#fbbf24; padding:4px 8px; border-radius:4px; font-size:12px;"><?php echo $desp['status']; ?></span></td>
+                                <td><?php echo date('d/m/Y', strtotime($desp['data_compra'])); ?></td>
+                                <td>
+                                    <?php
+                                        $parcelas_str = $desp['parcelas'];
+                                        $parcelas_pagas = isset($desp['parcelas_pagas']) ? (int)$desp['parcelas_pagas'] : 0;
+                                        $total_parcelas = 1;
+                                        if (preg_match('/^(\d+)/', trim($parcelas_str), $matches)) {
+                                            $total_parcelas = max(1, intval($matches[1]));
+                                        }
+                                        
+                                        if ($total_parcelas > 1) {
+                                            $valor_parcela = $desp['valor_total'] / $total_parcelas;
+                                            echo '<button type="button" class="btn-icon" style="background:none; border:none; color:#10b981; cursor:pointer;" title="Adiantar Parcela" onclick="abrirModalAdiantarParcela(' . $desp['id'] . ', \'' . htmlspecialchars(addslashes($desp['descricao'])) . '\', ' . $valor_parcela . ', ' . ($parcelas_pagas + 1) . ', ' . $total_parcelas . ')"><i data-feather="dollar-sign"></i></button>';
+                                        } else {
+                                            echo '<a href="pay_card_expense.php?id=' . $desp['id'] . '" class="btn-icon" style="background:none; border:none; color:#10b981; cursor:pointer;" title="Marcar como Quitada"><i data-feather="check-circle"></i></a>';
+                                        }
+                                    ?>
+                                    <button class="btn-icon" style="background:none; border:none; color:#a0aec0; cursor:pointer;" title="Editar" onclick="abrirModalEdicaoDespesaCartao(<?php echo $desp['id']; ?>, '<?php echo htmlspecialchars(addslashes($desp['descricao'])); ?>', <?php echo $desp['cartao_id']; ?>, '<?php echo htmlspecialchars(addslashes($desp['categoria'])); ?>', '<?php echo $desp['data_compra']; ?>', <?php echo $desp['valor_total']; ?>, '<?php echo htmlspecialchars(addslashes($desp['parcelas'])); ?>')"><i data-feather="edit-2"></i></button>
+                                    <a href="delete_card_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" style="background:none; border:none; color:#a0aec0; cursor:pointer;" title="Excluir" onclick="return confirm('Excluir esta despesa? O limite será restaurado.');"><i data-feather="trash-2"></i></a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             <?php endif; ?>
         </div>
 
@@ -184,25 +186,27 @@ while($row = $result_despesas->fetch_assoc()) {
                     <p style="color: #a0aec0;">As despesas pagas aparecerão aqui</p>
                 </div>
             <?php else: ?>
-                <table class="tabela-dados">
-                    <thead><tr><th>Cartão</th><th>Categoria</th><th>Valor Total</th><th>Parcelas</th><th>Data Compra</th><th>Data Quitação</th><th>Ações</th></tr></thead>
-                    <tbody>
-                        <?php foreach($despesas_quitadas as $desp): ?>
-                        <tr>
-                            <td><strong><?php echo htmlspecialchars($desp['nome_cartao']); ?></strong></td>
-                            <td><?php echo htmlspecialchars($desp['categoria']); ?></td>
-                            <td style="color: #10b981; font-weight:bold;">R$ <?php echo number_format($desp['valor_total'], 2, ',', '.'); ?></td>
-                            <td><?php echo htmlspecialchars($desp['parcelas']); ?></td>
-                            <td><?php echo date('d/m/Y', strtotime($desp['data_compra'])); ?></td>
-                            <td><?php echo date('d/m/Y', strtotime($desp['data_quitacao'])); ?></td>
-                            <td>
-                                <a href="unpay_card_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" style="background:none; border:none; color:#f59e0b; cursor:pointer;" title="Reverter para Não Pago" onclick="return confirm('Deseja reverter esta despesa para não paga? O limite e a fatura do cartão serão recalculados.');"><i data-feather="rotate-ccw"></i></a>
-                                <a href="delete_card_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" style="background:none; border:none; color:#a0aec0; cursor:pointer;" title="Excluir Histórico" onclick="return confirm('Apagar este registro do histórico de quitadas?');"><i data-feather="trash-2"></i></a>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="container-tabela">
+                    <table class="tabela-dados">
+                        <thead><tr><th>Cartão</th><th>Categoria</th><th>Valor Total</th><th>Parcelas</th><th>Data Compra</th><th>Data Quitação</th><th>Ações</th></tr></thead>
+                        <tbody>
+                            <?php foreach($despesas_quitadas as $desp): ?>
+                            <tr>
+                                <td><strong><?php echo htmlspecialchars($desp['nome_cartao']); ?></strong></td>
+                                <td><?php echo htmlspecialchars($desp['categoria']); ?></td>
+                                <td style="color: #10b981; font-weight:bold;">R$ <?php echo number_format($desp['valor_total'], 2, ',', '.'); ?></td>
+                                <td><?php echo htmlspecialchars($desp['parcelas']); ?></td>
+                                <td><?php echo date('d/m/Y', strtotime($desp['data_compra'])); ?></td>
+                                <td><?php echo date('d/m/Y', strtotime($desp['data_quitacao'])); ?></td>
+                                <td>
+                                    <a href="unpay_card_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" style="background:none; border:none; color:#f59e0b; cursor:pointer;" title="Reverter para Não Pago" onclick="return confirm('Deseja reverter esta despesa para não paga? O limite e a fatura do cartão serão recalculados.');"><i data-feather="rotate-ccw"></i></a>
+                                    <a href="delete_card_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" style="background:none; border:none; color:#a0aec0; cursor:pointer;" title="Excluir Histórico" onclick="return confirm('Apagar este registro do histórico de quitadas?');"><i data-feather="trash-2"></i></a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             <?php endif; ?>
         </div>
     </div>

@@ -101,35 +101,37 @@ $total_geral = $total_fixas + $total_variaveis;
                     <button class="btn-primary" style="background:#d97706;" onclick="abrirModalDespesa()">+ Adicionar Gasto Fixo</button>
                 </div>
             <?php else: ?>
-                <table class="tabela-dados">
-                    <thead>
-                        <tr>
-                            <th>Status</th>
-                            <th>Nome</th>
-                            <th>Categoria</th>
-                            <th>Valor</th>
-                            <th>Vencimento</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($despesas_fixas as $desp): ?>
-                        <tr>
-                            <td>
-                                <a href="pay_expense.php?id=<?php echo $desp['id']; ?>" class="toggle-status" title="Marcar como Pago"></a>
-                            </td>
-                            <td><strong><?php echo htmlspecialchars($desp['nome']); ?></strong></td>
-                            <td><?php echo htmlspecialchars($desp['categoria_item']); ?></td>
-                            <td style="font-weight:bold;">R$ <?php echo number_format($desp['valor'], 2, ',', '.'); ?></td>
-                            <td>Dia <?php echo str_pad($desp['dia_vencimento'], 2, "0", STR_PAD_LEFT); ?></td>
-                            <td>
-                                <button class="btn-icon" title="Editar" onclick="abrirModalEdicaoDespesa(<?php echo $desp['id']; ?>, '<?php echo $desp['tipo_despesa']; ?>', '<?php echo htmlspecialchars(addslashes($desp['nome'])); ?>', <?php echo $desp['valor']; ?>, <?php echo $desp['dia_vencimento']; ?>, '<?php echo htmlspecialchars(addslashes($desp['categoria_item'])); ?>', '<?php echo htmlspecialchars(addslashes($desp['observacoes'])); ?>')"><i data-feather="edit-2"></i></button>
-                                <a href="delete_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" title="Excluir Despesa" onclick="return confirm('Tem certeza que deseja excluir esta despesa fixa?');"><i data-feather="trash-2"></i></a>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="container-tabela">
+                    <table class="tabela-dados">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Vencimento</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach($despesas_fixas as $desp): ?>
+                            <tr>
+                                <td>
+                                    <a href="pay_expense.php?id=<?php echo $desp['id']; ?>" class="toggle-status" title="Marcar como Pago"></a>
+                                </td>
+                                <td><strong><?php echo htmlspecialchars($desp['nome']); ?></strong></td>
+                                <td><?php echo htmlspecialchars($desp['categoria_item']); ?></td>
+                                <td style="font-weight:bold;">R$ <?php echo number_format($desp['valor'], 2, ',', '.'); ?></td>
+                                <td>Dia <?php echo str_pad($desp['dia_vencimento'], 2, "0", STR_PAD_LEFT); ?></td>
+                                <td>
+                                    <button class="btn-icon" title="Editar" onclick="abrirModalEdicaoDespesa(<?php echo $desp['id']; ?>, '<?php echo $desp['tipo_despesa']; ?>', '<?php echo htmlspecialchars(addslashes($desp['nome'])); ?>', <?php echo $desp['valor']; ?>, <?php echo $desp['dia_vencimento']; ?>, '<?php echo htmlspecialchars(addslashes($desp['categoria_item'])); ?>', '<?php echo htmlspecialchars(addslashes($desp['observacoes'])); ?>')"><i data-feather="edit-2"></i></button>
+                                    <a href="delete_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" title="Excluir Despesa" onclick="return confirm('Tem certeza que deseja excluir esta despesa fixa?');"><i data-feather="trash-2"></i></a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             <?php endif; ?>
         </div>
 
@@ -142,39 +144,41 @@ $total_geral = $total_fixas + $total_variaveis;
                     <button class="btn-primary" style="background:#1e293b; border:1px solid #334155;" onclick="abrirModalDespesa()">+ Adicionar Gasto Variável</button>
                 </div>
             <?php else: ?>
-                <table class="tabela-dados">
-                    <thead>
-                        <tr>
-                            <th>Categoria</th>
-                            <th>Mês/Ano</th>
-                            <th>Vencimento</th>
-                            <th>Valor</th>
-                            <th>Observações</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($despesas_variaveis as $desp): ?>
-                        <tr>
-                            <td>
-                                <strong><?php echo htmlspecialchars($desp['categoria_item']); ?></strong>
-                                <?php if(!empty($desp['mes_ano']) && $desp['mes_ano'] !== $mes_atual): ?>
-                                    <span class="badge-atrasado" style="background:#f59e0b; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:8px; font-weight:500;">Pendente</span>
-                                <?php endif; ?>
-                            </td>
-                            <td><?php echo htmlspecialchars($desp['mes_ano']); ?></td>
-                            <td>Dia <?php echo str_pad($desp['dia_vencimento'], 2, "0", STR_PAD_LEFT); ?></td>
-                            <td style="font-weight:bold;">R$ <?php echo number_format($desp['valor'], 2, ',', '.'); ?></td>
-                            <td style="color:#a0aec0;"><?php echo htmlspecialchars($desp['observacoes']); ?></td>
-                            <td>
-                                <a href="pay_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" title="Marcar como Pago"><i data-feather="check-circle" style="color:#10b981;"></i></a>
-                                <button class="btn-icon" title="Editar" onclick="abrirModalEdicaoDespesa(<?php echo $desp['id']; ?>, '<?php echo $desp['tipo_despesa']; ?>', '<?php echo htmlspecialchars(addslashes($desp['nome'])); ?>', <?php echo $desp['valor']; ?>, <?php echo $desp['dia_vencimento']; ?>, '<?php echo htmlspecialchars(addslashes($desp['categoria_item'])); ?>', '<?php echo htmlspecialchars(addslashes($desp['observacoes'])); ?>')"><i data-feather="edit-2"></i></button>
-                                <a href="delete_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" title="Excluir Despesa" onclick="return confirm('Tem certeza que deseja excluir esta despesa variável?');"><i data-feather="trash-2"></i></a>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="container-tabela">
+                    <table class="tabela-dados">
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Mês/Ano</th>
+                                <th>Vencimento</th>
+                                <th>Valor</th>
+                                <th>Observações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach($despesas_variaveis as $desp): ?>
+                            <tr>
+                                <td>
+                                    <strong><?php echo htmlspecialchars($desp['categoria_item']); ?></strong>
+                                    <?php if(!empty($desp['mes_ano']) && $desp['mes_ano'] !== $mes_atual): ?>
+                                        <span class="badge-atrasado" style="background:#f59e0b; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:8px; font-weight:500;">Pendente</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo htmlspecialchars($desp['mes_ano']); ?></td>
+                                <td>Dia <?php echo str_pad($desp['dia_vencimento'], 2, "0", STR_PAD_LEFT); ?></td>
+                                <td style="font-weight:bold;">R$ <?php echo number_format($desp['valor'], 2, ',', '.'); ?></td>
+                                <td style="color:#a0aec0;"><?php echo htmlspecialchars($desp['observacoes']); ?></td>
+                                <td>
+                                    <a href="pay_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" title="Marcar como Pago"><i data-feather="check-circle" style="color:#10b981;"></i></a>
+                                    <button class="btn-icon" title="Editar" onclick="abrirModalEdicaoDespesa(<?php echo $desp['id']; ?>, '<?php echo $desp['tipo_despesa']; ?>', '<?php echo htmlspecialchars(addslashes($desp['nome'])); ?>', <?php echo $desp['valor']; ?>, <?php echo $desp['dia_vencimento']; ?>, '<?php echo htmlspecialchars(addslashes($desp['categoria_item'])); ?>', '<?php echo htmlspecialchars(addslashes($desp['observacoes'])); ?>')"><i data-feather="edit-2"></i></button>
+                                    <a href="delete_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" title="Excluir Despesa" onclick="return confirm('Tem certeza que deseja excluir esta despesa variável?');"><i data-feather="trash-2"></i></a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             <?php endif; ?>
         </div>
 
@@ -186,36 +190,38 @@ $total_geral = $total_fixas + $total_variaveis;
                     <p style="color: #a0aec0;">Marque os gastos como pagos para aparecerem aqui</p>
                 </div>
             <?php else: ?>
-                <table class="tabela-dados">
-                    <thead>
-                        <tr>
-                            <th>Categoria</th>
-                            <th>Mês/Ano</th>
-                            <th>Vencimento</th>
-                            <th>Valor</th>
-                            <th>Data Quitação</th>
-                            <th>Observações</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($despesas_quitadas as $desp): ?>
-                        <tr>
-                            <td><strong><?php echo htmlspecialchars($desp['categoria_item']); ?></strong></td>
-                            <td><?php echo htmlspecialchars($desp['mes_ano']); ?></td>
-                            <td>Dia <?php echo str_pad($desp['dia_vencimento'], 2, "0", STR_PAD_LEFT); ?></td>
-                            <td style="color: #10b981; font-weight:bold;">R$ <?php echo number_format($desp['valor'], 2, ',', '.'); ?></td>
-                            <td><?php echo date('d/m/Y', strtotime($desp['data_quitacao'])); ?></td>
-                            <td style="color:#a0aec0;"><?php echo htmlspecialchars($desp['observacoes']); ?></td>
-                            <td>
-                                <a href="unpay_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" title="Reverter para Não Pago" onclick="return confirm('Deseja reverter esta despesa para não paga?');">
-                                    <i data-feather="rotate-ccw" style="color: #f59e0b;"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="container-tabela">
+                    <table class="tabela-dados">
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Mês/Ano</th>
+                                <th>Vencimento</th>
+                                <th>Valor</th>
+                                <th>Data Quitação</th>
+                                <th>Observações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach($despesas_quitadas as $desp): ?>
+                            <tr>
+                                <td><strong><?php echo htmlspecialchars($desp['categoria_item']); ?></strong></td>
+                                <td><?php echo htmlspecialchars($desp['mes_ano']); ?></td>
+                                <td>Dia <?php echo str_pad($desp['dia_vencimento'], 2, "0", STR_PAD_LEFT); ?></td>
+                                <td style="color: #10b981; font-weight:bold;">R$ <?php echo number_format($desp['valor'], 2, ',', '.'); ?></td>
+                                <td><?php echo date('d/m/Y', strtotime($desp['data_quitacao'])); ?></td>
+                                <td style="color:#a0aec0;"><?php echo htmlspecialchars($desp['observacoes']); ?></td>
+                                <td>
+                                    <a href="unpay_expense.php?id=<?php echo $desp['id']; ?>" class="btn-icon" title="Reverter para Não Pago" onclick="return confirm('Deseja reverter esta despesa para não paga?');">
+                                        <i data-feather="rotate-ccw" style="color: #f59e0b;"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             <?php endif; ?>
         </div>
     </div>
