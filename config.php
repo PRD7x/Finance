@@ -1,10 +1,10 @@
 <?php
 
-$dbHost = 'hayabusa.proxy.rlwy.net';
-$dbUsername = 'root';
-$dbPassword = 'jxLaJlcQyyCTbZlXnivxvWAcUAeCAFOd';
-$dbName = 'railway';
-$dbPort = 57565;
+$dbHost = getenv('MYSQLHOST') ?: 'hayabusa.proxy.rlwy.net';
+$dbUsername = getenv('MYSQLUSER') ?: 'root';
+$dbPassword = getenv('MYSQLPASSWORD') ?: 'jxLaJlcQyyCTbZlXnivxvWAcUAeCAFOd';
+$dbName = getenv('MYSQLDATABASE') ?: 'railway';
+$dbPort = intval(getenv('MYSQLPORT') ?: 57565);
 
 $conexao = new mysqli($dbHost, $dbUsername, $dbPassword, $dbName, $dbPort);
 
