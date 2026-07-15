@@ -12,7 +12,7 @@ if (isset($_GET['id'])) {
     $data_hoje = date('Y-m-d');
     
     // Busca a despesa
-    $stmt_find = $conexao->prepare("SELECT valor_total, cartao_id, parcelas, parcelas_pagas FROM despesas_cartao WHERE id = ? AND user_id = ? AND status != 'Quitado'");
+    $stmt_find = $conexao->prepare("SELECT valor_total, cartao_id, parcelas FROM despesas_cartao WHERE id = ? AND user_id = ? AND status != 'Quitado'");
     $stmt_find->bind_param("ii", $id_despesa, $user_id);
     $stmt_find->execute();
     $res = $stmt_find->get_result();
@@ -21,13 +21,15 @@ if (isset($_GET['id'])) {
         $valor_total = (float)$row['valor_total'];
         $cartao_id = $row['cartao_id'];
         $parcelas_str = $row['parcelas'];
-        $parcelas_pagas = (int)$row['parcelas_pagas'];
         
-        // Tenta extrair o total de parcelas
+        // Extrai a parcela atual e o total de parcelas a partir do formato "ATUAL/TOTAL"
+        $parcela_atual = 1;
         $total_parcelas = 1;
+        
         if (strpos($parcelas_str, '/') !== false) {
             $partes = explode('/', $parcelas_str);
-            $total_parcelas = max(1, intval(end($partes)));
+            $parcela_atual = max(1, intval($partes[0]));
+            $total_parcelas = max(1, intval($partes[1]));
         } else if (preg_match('/^(\d+)/', trim($parcelas_str), $matches)) {
             $total_parcelas = max(1, intval($matches[1]));
         }
@@ -35,14 +37,17 @@ if (isset($_GET['id'])) {
         // Calcula o valor de UMA parcela
         $valor_parcela = $total_parcelas > 0 ? ($valor_total / $total_parcelas) : $valor_total;
         
-        // Incrementa as parcelas pagas
-        $parcelas_pagas++;
+        // Incrementa a parcela atual
+        $parcela_atual++;
         
-        // Se pagou todas as parcelas, muda o status para Quitado
-        $novo_status = ($parcelas_pagas >= $total_parcelas) ? 'Quitado' : 'Pendente';
+        // Gera a nova string de parcelas (ex: "2/12")
+        $nova_parcelas_str = $parcela_atual . '/' . $total_parcelas;
         
-        $stmt_upd = $conexao->prepare("UPDATE despesas_cartao SET parcelas_pagas = ?, status = ?, data_quitacao = ? WHERE id = ?");
-        $stmt_upd->bind_param("issi", $parcelas_pagas, $novo_status, $data_hoje, $id_despesa);
+        // Se pagou todas as parcelas (ex: 12/12), muda o status para Quitado, senão continua Pendente
+        $novo_status = ($parcela_atual >= $total_parcelas) ? 'Quitado' : 'Pendente';
+        
+        $stmt_upd = $conexao->prepare("UPDATE despesas_cartao SET parcelas = ?, status = ?, data_quitacao = ? WHERE id = ?");
+        $stmt_upd->bind_param("sssi", $nova_parcelas_str, $novo_status, $data_hoje, $id_despesa);
         
         if ($stmt_upd->execute()) {
             // Reduz apenas UMA PARCELA do painel financeiro principal

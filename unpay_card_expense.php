@@ -12,7 +12,7 @@ if (isset($_GET['id'])) {
     $user_id = $_SESSION['user_id'];
     
     // Busca a despesa de cartão quitada
-    $stmt_find = $conexao->prepare("SELECT valor_total, cartao_id, status, parcelas, parcelas_pagas FROM despesas_cartao WHERE id = ? AND user_id = ? AND status = 'Quitado'");
+    $stmt_find = $conexao->prepare("SELECT valor_total, cartao_id, status, parcelas FROM despesas_cartao WHERE id = ? AND user_id = ? AND status = 'Quitado'");
     $stmt_find->bind_param("ii", $id_despesa, $user_id);
     $stmt_find->execute();
     $res = $stmt_find->get_result();
@@ -21,24 +21,26 @@ if (isset($_GET['id'])) {
         $valor_total = (float)$row['valor_total'];
         $cartao_id = $row['cartao_id'];
         $parcelas_str = $row['parcelas'];
-        $parcelas_pagas = (int)$row['parcelas_pagas'];
         
-        // Determina o número total de parcelas
+        // Determina a parcela atual e o total de parcelas
+        $parcela_atual = 1;
         $total_parcelas = 1;
         if (strpos($parcelas_str, '/') !== false) {
             $partes = explode('/', $parcelas_str);
-            $total_parcelas = max(1, intval(end($partes)));
+            $parcela_atual = max(1, intval($partes[0]));
+            $total_parcelas = max(1, intval($partes[1]));
         } else if (preg_match('/^(\d+)/', trim($parcelas_str), $matches)) {
             $total_parcelas = max(1, intval($matches[1]));
         }
         
         if ($total_parcelas > 1) {
-            // Se for parcelado, decrementa uma parcela paga
-            $nova_parcelas_pagas = max(0, $parcelas_pagas - 1);
+            // Se for parcelado, decrementa uma parcela atual (ex: de 12/12 para 11/12)
+            $nova_parcela_atual = max(1, $parcela_atual - 1);
+            $nova_parcelas_str = $nova_parcela_atual . '/' . $total_parcelas;
             $valor_reverter = $valor_total / $total_parcelas;
             
-            $stmt_upd = $conexao->prepare("UPDATE despesas_cartao SET parcelas_pagas = ?, status = 'Pendente', data_quitacao = NULL WHERE id = ?");
-            $stmt_upd->bind_param("ii", $nova_parcelas_pagas, $id_despesa);
+            $stmt_upd = $conexao->prepare("UPDATE despesas_cartao SET parcelas = ?, status = 'Pendente', data_quitacao = NULL WHERE id = ?");
+            $stmt_upd->bind_param("si", $nova_parcelas_str, $id_despesa);
         } else {
             // Se for parcela única
             $valor_reverter = $valor_total;
