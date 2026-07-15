@@ -204,8 +204,8 @@ if (!$finance) {
     </script>
     
     <!-- Script lógico que controla as interações do painel -->
-    <script src="script.js"></script>
-    <script src="js/navbar.js"></script>
+    <script src="script.js?v=<?php echo time(); ?>"></script>
+    <script src="js/navbar.js?v=<?php echo time(); ?>"></script>
 
 </body>
 </html>
