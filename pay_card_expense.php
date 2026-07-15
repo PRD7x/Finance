@@ -13,7 +13,7 @@ if (isset($_GET['id'])) {
     $data_hoje = date('Y-m-d');
     
     // Buscar a despesa de cartão
-    $stmt_find = $conexao->prepare("SELECT valor_total, cartao_id FROM despesas_cartao WHERE id = ? AND user_id = ? AND status != 'Quitada'");
+    $stmt_find = $conexao->prepare("SELECT valor_total, cartao_id FROM despesas_cartao WHERE id = ? AND user_id = ? AND status != 'Quitado'");
     $stmt_find->bind_param("ii", $id_despesa, $user_id);
     $stmt_find->execute();
     $res = $stmt_find->get_result();
@@ -23,7 +23,7 @@ if (isset($_GET['id'])) {
         $cartao_id = $row['cartao_id'];
         
         // Atualiza status e data_quitacao
-        $stmt_upd = $conexao->prepare("UPDATE despesas_cartao SET status = 'Quitada', data_quitacao = ? WHERE id = ?");
+        $stmt_upd = $conexao->prepare("UPDATE despesas_cartao SET status = 'Quitado', data_quitacao = ? WHERE id = ?");
         $stmt_upd->bind_param("si", $data_hoje, $id_despesa);
         
         if ($stmt_upd->execute()) {

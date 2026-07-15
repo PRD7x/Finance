@@ -28,7 +28,7 @@ if ($row = $res->fetch_assoc()) {
     $stmt_del->bind_param("i", $id);
     
     if ($stmt_del->execute()) {
-        if ($status !== 'Quitada') {
+        if ($status !== 'Quitado') {
             // Se era pendente, precisa reverter do limite, fatura e dashboard
             $stmt_fin = $conexao->prepare("UPDATE finance_data SET cartao = cartao - ? WHERE user_id = ?");
             $stmt_fin->bind_param("di", $valor, $user_id);

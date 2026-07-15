@@ -12,7 +12,7 @@ if (isset($_GET['id'])) {
     $data_hoje = date('Y-m-d');
     
     // Busca a despesa
-    $stmt_find = $conexao->prepare("SELECT valor_total, cartao_id, parcelas, parcelas_pagas FROM despesas_cartao WHERE id = ? AND user_id = ? AND status != 'Quitada'");
+    $stmt_find = $conexao->prepare("SELECT valor_total, cartao_id, parcelas, parcelas_pagas FROM despesas_cartao WHERE id = ? AND user_id = ? AND status != 'Quitado'");
     $stmt_find->bind_param("ii", $id_despesa, $user_id);
     $stmt_find->execute();
     $res = $stmt_find->get_result();
@@ -23,20 +23,23 @@ if (isset($_GET['id'])) {
         $parcelas_str = $row['parcelas'];
         $parcelas_pagas = (int)$row['parcelas_pagas'];
         
-        // Tenta extrair o total de parcelas do inicio da string (ex: "4x", "4/", "4 ")
+        // Tenta extrair o total de parcelas
         $total_parcelas = 1;
-        if (preg_match('/^(\d+)/', trim($parcelas_str), $matches)) {
+        if (strpos($parcelas_str, '/') !== false) {
+            $partes = explode('/', $parcelas_str);
+            $total_parcelas = max(1, intval(end($partes)));
+        } else if (preg_match('/^(\d+)/', trim($parcelas_str), $matches)) {
             $total_parcelas = max(1, intval($matches[1]));
         }
         
         // Calcula o valor de UMA parcela
-        $valor_parcela = $valor_total / $total_parcelas;
+        $valor_parcela = $total_parcelas > 0 ? ($valor_total / $total_parcelas) : $valor_total;
         
         // Incrementa as parcelas pagas
         $parcelas_pagas++;
         
-        // Se pagou todas as parcelas, muda o status para Quitada
-        $novo_status = ($parcelas_pagas >= $total_parcelas) ? 'Quitada' : 'Pendente';
+        // Se pagou todas as parcelas, muda o status para Quitado
+        $novo_status = ($parcelas_pagas >= $total_parcelas) ? 'Quitado' : 'Pendente';
         
         $stmt_upd = $conexao->prepare("UPDATE despesas_cartao SET parcelas_pagas = ?, status = ?, data_quitacao = ? WHERE id = ?");
         $stmt_upd->bind_param("issi", $parcelas_pagas, $novo_status, $data_hoje, $id_despesa);

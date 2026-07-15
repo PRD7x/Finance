@@ -12,7 +12,7 @@ if (isset($_GET['id'])) {
     $user_id = $_SESSION['user_id'];
     
     // Busca a despesa de cartão quitada
-    $stmt_find = $conexao->prepare("SELECT valor_total, cartao_id, status, parcelas, parcelas_pagas FROM despesas_cartao WHERE id = ? AND user_id = ? AND status = 'Quitada'");
+    $stmt_find = $conexao->prepare("SELECT valor_total, cartao_id, status, parcelas, parcelas_pagas FROM despesas_cartao WHERE id = ? AND user_id = ? AND status = 'Quitado'");
     $stmt_find->bind_param("ii", $id_despesa, $user_id);
     $stmt_find->execute();
     $res = $stmt_find->get_result();
@@ -25,7 +25,10 @@ if (isset($_GET['id'])) {
         
         // Determina o número total de parcelas
         $total_parcelas = 1;
-        if (preg_match('/^(\d+)/', trim($parcelas_str), $matches)) {
+        if (strpos($parcelas_str, '/') !== false) {
+            $partes = explode('/', $parcelas_str);
+            $total_parcelas = max(1, intval(end($partes)));
+        } else if (preg_match('/^(\d+)/', trim($parcelas_str), $matches)) {
             $total_parcelas = max(1, intval($matches[1]));
         }
         

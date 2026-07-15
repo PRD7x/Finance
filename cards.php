@@ -36,7 +36,7 @@ $despesas_pendentes = [];
 $despesas_quitadas = [];
 
 while($row = $result_despesas->fetch_assoc()) {
-    if ($row['status'] === 'Quitada') {
+    if ($row['status'] === 'Quitado') {
         $despesas_quitadas[] = $row;
     } else {
         $despesas_pendentes[] = $row;
@@ -105,7 +105,10 @@ while($row = $result_despesas->fetch_assoc()) {
                                         $parcelas_str = $desp['parcelas'];
                                         $parcelas_pagas = isset($desp['parcelas_pagas']) ? (int)$desp['parcelas_pagas'] : 0;
                                         $total_parcelas = 1;
-                                        if (preg_match('/^(\d+)/', trim($parcelas_str), $matches)) {
+                                        if (strpos($parcelas_str, '/') !== false) {
+                                            $partes = explode('/', $parcelas_str);
+                                            $total_parcelas = max(1, intval(end($partes)));
+                                        } else if (preg_match('/^(\d+)/', trim($parcelas_str), $matches)) {
                                             $total_parcelas = max(1, intval($matches[1]));
                                         }
                                         
