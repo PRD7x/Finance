@@ -633,7 +633,7 @@ body{
     }
     
     /* Tabelas em containers que rolam lateralmente */
-    .container-tabela, .container-lista {
+    .container-tabela, .container-lista, #aba-despesas, #aba-quitadas, #aba-fixas, #aba-variaveis, #aba-quitados {
         padding: 0 0 20px 0 !important; /* remove padding lateral no mobile */
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
