@@ -210,6 +210,20 @@ body{
 .purple{ background: rgba(168, 85, 247, 0.15); color: #c084fc; }
 .red{ background: rgba(239, 68, 68, 0.15); color: #f87171; }
 
+/* Links de cartões no dashboard */
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: var(--transition-smooth);
+}
+
+.clickable-card:hover {
+    border-color: var(--border-glow-focus);
+    box-shadow: 0 12px 40px rgba(99, 102, 241, 0.15);
+    background: rgba(17, 24, 39, 0.6);
+}
+
 /* ==============================================================================
    SEÇÃO DE ACESSO RÁPIDO E ATALHOS
    ============================================================================== */

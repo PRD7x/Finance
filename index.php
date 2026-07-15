@@ -73,17 +73,19 @@ if (!$finance) {
         <section class="cards">
 
             <!-- Cartão: Patrimônio Total -->
-            <div class="card">
-                <div class="card-icon blue">
-                    <i data-feather="wallet"></i>
+            <a href="investments.php" class="card-link">
+                <div class="card clickable-card">
+                    <div class="card-icon blue">
+                        <i data-feather="wallet"></i>
+                    </div>
+                    <h3>Patrimônio Total</h3>
+                    <h2 id="patrimonio">R$ <?php echo number_format($finance['patrimonio'], 2, ',', '.'); ?></h2>
+                    <span>Total Geral</span>
                 </div>
-                <h3>Patrimônio Total</h3>
-                <h2 id="patrimonio">R$ <?php echo number_format($finance['patrimonio'], 2, ',', '.'); ?></h2>
-                <span>Total Geral</span>
-            </div>
+            </a>
 
             <!-- Cartão: Salário (Mês Atual) -->
-            <div class="card">
+            <div class="card clickable-card" data-action="edit-salary" style="cursor: pointer;">
                 <div class="card-icon green">
                     <i data-feather="dollar-sign"></i>
                 </div>
@@ -93,48 +95,56 @@ if (!$finance) {
             </div>
 
             <!-- Cartão: Reserva de Emergência -->
-            <div class="card">
-                <div class="card-icon cyan">
-                    <i data-feather="shield"></i>
+            <a href="reserve.php" class="card-link">
+                <div class="card clickable-card">
+                    <div class="card-icon cyan">
+                        <i data-feather="shield"></i>
+                    </div>
+                    <h3>Reserva de Emergência</h3>
+                    <h2 id="reserva">R$ <?php echo number_format($finance['reserva'], 2, ',', '.'); ?></h2>
+                    <span>Segurança</span>
                 </div>
-                <h3>Reserva de Emergência</h3>
-                <h2 id="reserva">R$ <?php echo number_format($finance['reserva'], 2, ',', '.'); ?></h2>
-                <span>Segurança</span>
-            </div>
+            </a>
 
             <!-- Cartão: Gastos Fixos -->
-            <div class="card">
-                <div class="card-icon yellow">
-                    <i data-feather="home"></i>
+            <a href="expenses.php?tab=fixas" class="card-link">
+                <div class="card clickable-card">
+                    <div class="card-icon yellow">
+                        <i data-feather="home"></i>
+                    </div>
+                    <h3>Gastos Fixos</h3>
+                    <h2 id="fixos">R$ <?php echo number_format($finance['gastos_fixos'], 2, ',', '.'); ?></h2>
+                    <span>Mensal</span>
                 </div>
-                <h3>Gastos Fixos</h3>
-                <h2 id="fixos">R$ <?php echo number_format($finance['gastos_fixos'], 2, ',', '.'); ?></h2>
-                <span>Mensal</span>
-            </div>
+            </a>
 
             <!-- Cartão: Fatura de Cartões -->
-            <div class="card">
-                <div class="card-icon purple">
-                    <i data-feather="credit-card"></i>
+            <a href="cards.php" class="card-link">
+                <div class="card clickable-card">
+                    <div class="card-icon purple">
+                        <i data-feather="credit-card"></i>
+                    </div>
+                    <h3>Cartão</h3>
+                    <h2 id="cartao">R$ <?php echo number_format($finance['cartao'], 2, ',', '.'); ?></h2>
+                    <span>Parcelas a pagar</span>
                 </div>
-                <h3>Cartão</h3>
-                <h2 id="cartao">R$ <?php echo number_format($finance['cartao'], 2, ',', '.'); ?></h2>
-                <span>Parcelas a pagar</span>
-            </div>
+            </a>
 
             <!-- Cartão: Gastos Totais do Mês (Calculado automaticamente: Fixos + Variáveis) -->
-            <div class="card">
-                <div class="card-icon red">
-                    <i data-feather="calendar"></i>
+            <a href="expenses.php?tab=variaveis" class="card-link">
+                <div class="card clickable-card">
+                    <div class="card-icon red">
+                        <i data-feather="calendar"></i>
+                    </div>
+                    <h3>Gastos do Mês</h3>
+                    <h2 id="mes">R$ <?php echo number_format($finance['gastos_mes'], 2, ',', '.'); ?></h2>
+                    <span>Resumo mensal</span>
                 </div>
-                <h3>Gastos do Mês</h3>
-                <h2 id="mes">R$ <?php echo number_format($finance['gastos_mes'], 2, ',', '.'); ?></h2>
-                <span>Resumo mensal</span>
-            </div>
+            </a>
 
         </section>
 
-        <!-- Seção de Acesso Rápido para atualização via popups modal -->
+        <!-- Seção de Acesso Rápido -->
         <section class="quick-access">
             <h2>Acesso Rápido</h2>
             <div class="actions">
@@ -158,8 +168,8 @@ if (!$finance) {
                     <span>Cartões</span>
                 </a>
 
-                <!-- Mantido por questões de consistência visual de botões de atalho -->
-                <button class="action-btn" data-field="salario" data-title="Atualizar Salário (Mês Atual)">
+                <!-- Aciona a edição de Salário direto no modal de salário -->
+                <button class="action-btn" data-action="edit-salary">
                     <i data-feather="briefcase"></i>
                     <span>Salário</span>
                 </button>
@@ -168,19 +178,17 @@ if (!$finance) {
 
     </main>
 
-    <!-- Modal genérico para atualização dinâmica dos valores de qualquer campo -->
-    <div id="updateModal" class="modal-overlay">
+    <!-- Modal para atualização do Salário -->
+    <div id="updateSalaryModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalTitle">Atualizar Valor</h3>
+                <h3>Atualizar Salário (Mês Atual)</h3>
                 <button type="button" id="closeModalBtn" class="close-btn">&times;</button>
             </div>
-            <form id="updateForm">
-                <!-- Input hidden que armazena qual campo de banco será atualizado (ex: patrimonio) -->
-                <input type="hidden" id="modalField" name="field">
+            <form id="updateSalaryForm">
                 <div class="modal-body">
-                    <label for="modalValue" id="modalLabel">Novo Valor (R$)</label>
-                    <input type="number" step="0.01" min="0" id="modalValue" name="value" placeholder="Digite o novo valor (ex: 1500,50)" required>
+                    <label for="salaryValue">Novo Salário (R$)</label>
+                    <input type="number" step="0.01" min="0" id="salaryValue" name="value" placeholder="Digite o novo valor do salário" required>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="cancelModalBtn" class="btn-secondary">Cancelar</button>

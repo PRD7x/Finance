@@ -52,30 +52,24 @@ function renderDashboard(data) {
 renderDashboard(dados);
 
 
-const modal = document.getElementById('updateModal');
-const updateForm = document.getElementById('updateForm');
-const modalTitle = document.getElementById('modalTitle');
-const modalField = document.getElementById('modalField');
-const modalValue = document.getElementById('modalValue');
+const modal = document.getElementById('updateSalaryModal');
+const updateForm = document.getElementById('updateSalaryForm');
+const modalValue = document.getElementById('salaryValue');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const cancelModalBtn = document.getElementById('cancelModalBtn');
 
-// Adiciona evento de clique em todos os botões da seção de atalhos rápidos que abrem modal
-document.querySelectorAll('.action-btn[data-field]').forEach(button => {
-    button.addEventListener('click', () => {
-        const field = button.getAttribute('data-field');
-        const title = button.getAttribute('data-title');
+// Abre o modal de salário ao acionar os gatilhos data-action="edit-salary"
+document.querySelectorAll('[data-action="edit-salary"]').forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+        e.preventDefault();
         
-        modalTitle.textContent = title;
-        modalField.value = field;
-        
-        // Carrega o valor atual daquele campo como valor inicial do input do modal
-        const valorAtual = dados[field];
+        // Carrega o valor atual do salário no input
+        const valorAtual = dados.salario;
         modalValue.value = valorAtual > 0 ? valorAtual : '';
-        modalValue.focus();
         
-        // Exibe o modal overlay adicionando a classe "show"
+        // Exibe o modal
         modal.classList.add('show');
+        modalValue.focus();
     });
 });
 
@@ -86,46 +80,49 @@ function fecharModal() {
 }
 
 // Associa o fechamento aos botões de fechar (X) e cancelar
-closeModalBtn.addEventListener('click', fecharModal);
-cancelModalBtn.addEventListener('click', fecharModal);
+if (closeModalBtn) closeModalBtn.addEventListener('click', fecharModal);
+if (cancelModalBtn) cancelModalBtn.addEventListener('click', fecharModal);
 
 // Fecha o modal se o usuário clicar na área borrada externa (overlay)
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        fecharModal();
-    }
-});
-
-// Escuta a submissão do formulário do Modal para salvamento genérico dos campos
-updateForm.addEventListener('submit', (e) => {
-    e.preventDefault(); // Evita recarregamento de página
-    
-    const field = modalField.value;
-    const value = modalValue.value;
-    
-    // Constrói os dados a serem transmitidos por POST
-    const formData = new FormData();
-    formData.append('field', field);
-    formData.append('value', value);
-    
-    // Dispara a requisição assíncrona fetch para o arquivo PHP de processamento financeiro
-    fetch('update_finance.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            // Sincroniza a memória local com a resposta e atualiza o painel
-            dados = result.data;
-            renderDashboard(dados);
+if (modal) {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
             fecharModal();
-        } else {
-            alert('Erro: ' + result.error);
         }
-    })
-    .catch(error => {
-        console.error('Erro na requisição:', error);
-        alert('Erro ao conectar-se ao servidor. Tente novamente.');
     });
-});
+}
+
+// Escuta a submissão do formulário do Salário
+if (updateForm) {
+    updateForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Evita recarregamento de página
+        
+        const value = modalValue.value;
+        
+        // Constrói os dados a serem transmitidos por POST
+        const formData = new FormData();
+        formData.append('field', 'salario');
+        formData.append('value', value);
+        
+        // Dispara a requisição assíncrona fetch para o arquivo PHP de processamento financeiro
+        fetch('update_finance.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                // Sincroniza a memória local com a resposta e atualiza o painel
+                dados = result.data;
+                renderDashboard(dados);
+                fecharModal();
+            } else {
+                alert('Erro: ' + result.error);
+            }
+        })
+        .catch(error => {
+            console.error('Erro na requisição:', error);
+            alert('Erro ao conectar-se ao servidor. Tente novamente.');
+        });
+    });
+}
