@@ -15,3 +15,7 @@ desktop.ini
 # Logs and databases
 *.log
 *.sqlite
+
+# Media tests
+*.mp4
+

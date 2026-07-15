@@ -2,6 +2,5 @@
   "name": "prd7x/finance",
   "description": "Sistema de Controle Financeiro Personalizado",
   "require": {
-    "ext-mysqli": "*"
   }
 }
