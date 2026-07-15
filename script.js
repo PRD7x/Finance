@@ -60,8 +60,8 @@ const modalValue = document.getElementById('modalValue');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const cancelModalBtn = document.getElementById('cancelModalBtn');
 
-// Adiciona evento de clique em todos os botões da seção de atalhos rápidos
-document.querySelectorAll('.action-btn').forEach(button => {
+// Adiciona evento de clique em todos os botões da seção de atalhos rápidos que abrem modal
+document.querySelectorAll('.action-btn[data-field]').forEach(button => {
     button.addEventListener('click', () => {
         const field = button.getAttribute('data-field');
         const title = button.getAttribute('data-title');
