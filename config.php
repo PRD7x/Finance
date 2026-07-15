@@ -1,10 +1,10 @@
 <?php
 
-$dbHost = '127.0.0.1';
+$dbHost = 'hayabusa.proxy.rlwy.net';
 $dbUsername = 'root';
-$dbPassword = '';
-$dbName = 'dados';
-$dbPort = 3306;
+$dbPassword = 'jxLaJlcQyyCTbZlXnivxvWAcUAeCAFOd';
+$dbName = 'railway';
+$dbPort = 57565;
 
 $conexao = new mysqli($dbHost, $dbUsername, $dbPassword, $dbName, $dbPort);
 
