@@ -1,0 +1,301 @@
+/* ==============================================================================
+   CREDIT CARDS PAGE (GLASSMORPHISM & PREMIUM STYLE)
+   ============================================================================== */
+.header-page {
+    padding: 30px 40px 15px 40px;
+}
+
+.header-page h1 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-page p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-left: 36px;
+}
+
+.container-principal {
+    padding: 0 40px 40px 40px;
+}
+
+.tabs-menu {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-glow);
+    padding-bottom: 12px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: var(--transition-smooth);
+}
+
+.tab-btn.active {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.aba-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.aba-header h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+/* Tabela */
+.tabela-dados {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-surface);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 14px;
+    border: 1px solid var(--border-glow);
+}
+
+.tabela-dados th, .tabela-dados td {
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-glow);
+}
+
+.tabela-dados th {
+    background: var(--bg-surface-solid);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background: var(--bg-surface);
+    border-radius: 12px;
+    border: 1px dashed rgba(255,255,255,0.15);
+}
+
+/* Grid de Cartões */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 20px;
+}
+
+/* Paleta de Cores dos Cartões */
+.cartao-roxo { background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); }
+.cartao-laranja { background: linear-gradient(135deg, #ea580c 0%, #9a3412 100%); }
+.cartao-azul { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
+.cartao-verde { background: linear-gradient(135deg, #059669 0%, #064e3b 100%); }
+.cartao-vermelho { background: linear-gradient(135deg, #e11d48 0%, #881337 100%); }
+.cartao-preto { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+.cartao-prata { background: linear-gradient(135deg, #64748b 0%, #334155 100%); }
+
+.credit-card-ui {
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 22px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transition: var(--transition-smooth);
+}
+
+.credit-card-ui:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.45);
+}
+
+.credit-card-ui::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.card-ui-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 1;
+}
+
+.card-ui-name {
+    font-size: 16px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.card-ui-brand {
+    font-size: 11px;
+    color: rgba(255,255,255,0.75);
+    margin-top: 2px;
+}
+
+.card-ui-chip {
+    width: 32px;
+    height: 22px;
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    border-radius: 4px;
+    opacity: 0.85;
+}
+
+.card-ui-body {
+    z-index: 1;
+}
+
+.card-ui-limit span {
+    display: block;
+    font-size: 10px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.card-ui-limit strong {
+    font-size: 17px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.card-ui-footer {
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-ui-invoice {
+    text-align: right;
+    background: rgba(0,0,0,0.25);
+    padding: 6px 12px;
+    border-radius: 8px;
+}
+
+.card-ui-invoice span {
+    display: block;
+    font-size: 10px;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.card-ui-invoice strong {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+select.custom-select {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-glow);
+    border-radius: 8px;
+    color: #fff;
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: var(--transition-smooth);
+}
+
+select.custom-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+/* ==============================================================================
+   RESPONSIVIDADE MOBILE (MEDIA QUERIES)
+   ============================================================================== */
+@media (max-width: 768px) {
+    .header-page {
+        padding: 20px 15px 15px 15px;
+    }
+    
+    .header-page h1 {
+        font-size: 22px;
+    }
+    
+    .header-page p {
+        margin-left: 0;
+        margin-top: 4px;
+    }
+    
+    .container-principal {
+        padding: 0 15px 30px 15px;
+    }
+    
+    .tabs-menu {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .tab-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .aba-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .aba-header .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .credit-card-ui {
+        padding: 18px;
+        height: 165px;
+    }
+    
+    .tabela-dados th, .tabela-dados td {
+        padding: 10px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+}

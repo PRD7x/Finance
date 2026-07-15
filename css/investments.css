@@ -1,0 +1,133 @@
+/* ==============================================================================
+   INVESTMENTS PAGE (GLASSMORPHISM & PREMIUM STYLE)
+   ============================================================================== */
+.banner-verde {
+    background: linear-gradient(135deg, #10b981 0%, #064e3b 100%);
+    padding: 30px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-glow);
+}
+
+.banner-verde h1 {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-top: 6px;
+}
+
+.banner-verde span {
+    font-size: 14px;
+    opacity: 0.85;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.container-lista {
+    padding: 30px 40px 40px 40px;
+}
+
+.header-lista {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.header-lista h2 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.btn-novo {
+    background: var(--color-success);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition-smooth);
+}
+
+.btn-novo:hover {
+    background: var(--color-success-hover);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+/* Tabela */
+.tabela-invest {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-surface);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 14px;
+    border: 1px solid var(--border-glow);
+}
+
+.tabela-invest th, .tabela-invest td {
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-glow);
+}
+
+.tabela-invest th {
+    background: var(--bg-surface-solid);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tabela-invest tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.valor-positivo {
+    color: var(--color-success);
+    font-weight: 700;
+}
+
+/* ==============================================================================
+   RESPONSIVIDADE MOBILE (MEDIA QUERIES)
+   ============================================================================== */
+@media (max-width: 768px) {
+    .banner-verde {
+        padding: 20px 15px;
+    }
+    
+    .banner-verde h1 {
+        font-size: 26px;
+    }
+    
+    .container-lista {
+        padding: 25px 15px 30px 15px;
+    }
+    
+    .header-lista {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .btn-novo {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .tabela-invest th, .tabela-invest td {
+        padding: 10px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+}

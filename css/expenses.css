@@ -1,0 +1,273 @@
+/* ==============================================================================
+   EXPENSES LAYOUT (GLASSMORPHISM & PREMIUM STYLE)
+   ============================================================================== */
+.header-page {
+    padding: 30px 40px 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-page h1 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+
+.header-page p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.dashboard-cards {
+    display: flex;
+    gap: 20px;
+    padding: 0 40px 30px 40px;
+    flex-wrap: wrap;
+}
+
+.card-despesa {
+    flex: 1;
+    min-width: 250px;
+    padding: 25px;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-glow);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    transition: var(--transition-smooth);
+}
+
+.card-despesa:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+}
+
+.card-despesa h3 {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-main);
+    opacity: 0.85;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.card-despesa h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.card-despesa p {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* Gradients */
+.bg-laranja {
+    background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+    color: white;
+}
+
+.bg-vermelho {
+    background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+    color: white;
+}
+
+.bg-dark {
+    background: var(--bg-surface-solid);
+    color: white;
+    border: 1px solid var(--border-glow);
+}
+
+.container-tabela {
+    padding: 0 40px 40px 40px;
+}
+
+/* Abas (Tabs) */
+.tabs-menu {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-glow);
+    padding-bottom: 12px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: var(--transition-smooth);
+}
+
+.tab-btn:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: white;
+}
+
+.tab-btn.active {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* Tabela de Dados */
+.tabela-dados {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-surface);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 14px;
+    border: 1px solid var(--border-glow);
+}
+
+.tabela-dados th, .tabela-dados td {
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-glow);
+}
+
+.tabela-dados th {
+    background: var(--bg-surface-solid);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tabela-dados tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background: var(--bg-surface);
+    border-radius: 12px;
+    border: 1px dashed rgba(255,255,255,0.15);
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    transition: var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.toggle-status {
+    width: 36px;
+    height: 18px;
+    background: #1e293b;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    border: 1px solid var(--border-glow);
+    transition: var(--transition-smooth);
+}
+
+.toggle-status::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: var(--transition-smooth);
+}
+
+.toggle-status:hover::after {
+    background: white;
+}
+
+select.custom-select {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-glow);
+    border-radius: 8px;
+    color: #fff;
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: var(--transition-smooth);
+}
+
+select.custom-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+/* ==============================================================================
+   RESPONSIVIDADE MOBILE (MEDIA QUERIES)
+   ============================================================================== */
+@media (max-width: 768px) {
+    .header-page {
+        padding: 20px 15px 15px 15px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .header-page .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .dashboard-cards {
+        padding: 0 15px 25px 15px;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .card-despesa {
+        padding: 20px;
+    }
+    
+    .container-tabela {
+        padding: 0 15px 30px 15px;
+    }
+    
+    .tabs-menu {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .tab-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .tabela-dados th, .tabela-dados td {
+        padding: 10px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+}
