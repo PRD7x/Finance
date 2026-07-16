@@ -22,7 +22,7 @@ while($row = $result_cartoes->fetch_assoc()) {
 
 // Vai buscar as despesas dos cartões
 $stmt_despesas = $conexao->prepare("
-    SELECT d.*, c.nome_cartao 
+    SELECT d.*, c.nome_cartao, c.cor 
     FROM despesas_cartao d 
     JOIN cartoes c ON d.cartao_id = c.id 
     WHERE d.user_id = ? 
@@ -91,10 +91,20 @@ while($row = $result_despesas->fetch_assoc()) {
                     <table class="tabela-dados">
                         <thead><tr><th>Descrição</th><th>Cartão</th><th>Categoria</th><th>Valor Total</th><th>Parcelas</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead>
                         <tbody>
-                            <?php foreach($despesas_pendentes as $desp): ?>
+                            <?php foreach($despesas_pendentes as $desp): 
+                                // Normaliza a cor do cartão
+                                $cor_hex = $desp['cor'] ?? '#8b5cf6';
+                                if (!str_starts_with($cor_hex, '#')) {
+                                    $mapa = [ 'roxo' => '#8b5cf6', 'azul' => '#3b82f6', 'verde' => '#10b981', 'laranja' => '#f59e0b', 'vermelho' => '#ef4444', 'preto' => '#1e293b' ];
+                                    $cor_hex = $mapa[strtolower($cor_hex)] ?? '#1e293b';
+                                }
+                            ?>
                             <tr>
                                 <td><strong><?php echo htmlspecialchars($desp['descricao']); ?></strong></td>
-                                <td><?php echo htmlspecialchars($desp['nome_cartao']); ?></td>
+                                <td>
+                                    <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:<?php echo $cor_hex; ?>; margin-right:6px; vertical-align:middle; box-shadow: 0 0 6px <?php echo $cor_hex; ?>;"></span>
+                                    <span style="vertical-align:middle; font-weight:600; color:<?php echo $cor_hex; ?>;"><?php echo htmlspecialchars($desp['nome_cartao']); ?></span>
+                                </td>
                                 <td><?php echo htmlspecialchars($desp['categoria']); ?></td>
                                 <td style="font-weight:bold;">R$ <?php echo number_format($desp['valor_total'], 2, ',', '.'); ?></td>
                                 <td><?php echo htmlspecialchars($desp['parcelas']); ?></td>
@@ -193,9 +203,19 @@ while($row = $result_despesas->fetch_assoc()) {
                     <table class="tabela-dados">
                         <thead><tr><th>Cartão</th><th>Categoria</th><th>Valor Total</th><th>Parcelas</th><th>Data Compra</th><th>Data Quitação</th><th>Ações</th></tr></thead>
                         <tbody>
-                            <?php foreach($despesas_quitadas as $desp): ?>
+                            <?php foreach($despesas_quitadas as $desp): 
+                                // Normaliza a cor do cartão
+                                $cor_hex = $desp['cor'] ?? '#8b5cf6';
+                                if (!str_starts_with($cor_hex, '#')) {
+                                    $mapa = [ 'roxo' => '#8b5cf6', 'azul' => '#3b82f6', 'verde' => '#10b981', 'laranja' => '#f59e0b', 'vermelho' => '#ef4444', 'preto' => '#1e293b' ];
+                                    $cor_hex = $mapa[strtolower($cor_hex)] ?? '#1e293b';
+                                }
+                            ?>
                             <tr>
-                                <td><strong><?php echo htmlspecialchars($desp['nome_cartao']); ?></strong></td>
+                                <td>
+                                    <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:<?php echo $cor_hex; ?>; margin-right:6px; vertical-align:middle; box-shadow: 0 0 6px <?php echo $cor_hex; ?>;"></span>
+                                    <span style="vertical-align:middle; font-weight:600; color:<?php echo $cor_hex; ?>;"><?php echo htmlspecialchars($desp['nome_cartao']); ?></span>
+                                </td>
                                 <td><?php echo htmlspecialchars($desp['categoria']); ?></td>
                                 <td style="color: #10b981; font-weight:bold;">R$ <?php echo number_format($desp['valor_total'], 2, ',', '.'); ?></td>
                                 <td><?php echo htmlspecialchars($desp['parcelas']); ?></td>
@@ -334,9 +354,18 @@ while($row = $result_despesas->fetch_assoc()) {
 
                     <div style="margin-bottom: 15px;">
                         <label style="display:block; margin-bottom:5px; font-size:14px;">Cartão utilizado *</label>
-                        <select name="cartao_id" id="inputCartaoIdCartao" class="custom-select" required>
-                            <?php foreach($lista_cartoes as $cartao): ?>
-                                <option value="<?php echo $cartao['id']; ?>"><?php echo htmlspecialchars($cartao['nome_cartao'] . ' (' . $cartao['bandeira'] . ')'); ?></option>
+                        <select name="cartao_id" id="inputCartaoIdCartao" class="custom-select" required onchange="atualizarCorSelectCartao()">
+                            <?php foreach($lista_cartoes as $cartao): 
+                                // Normaliza a cor do cartão
+                                $cor_hex = $cartao['cor'] ?? '#8b5cf6';
+                                if (!str_starts_with($cor_hex, '#')) {
+                                    $mapa = [ 'roxo' => '#8b5cf6', 'azul' => '#3b82f6', 'verde' => '#10b981', 'laranja' => '#f59e0b', 'vermelho' => '#ef4444', 'preto' => '#1e293b' ];
+                                    $cor_hex = $mapa[strtolower($cor_hex)] ?? '#1e293b';
+                                }
+                            ?>
+                                <option value="<?php echo $cartao['id']; ?>" data-cor="<?php echo $cor_hex; ?>" style="color: <?php echo $cor_hex; ?>; font-weight: 600; background: #0f172a;">
+                                    ● <?php echo htmlspecialchars($cartao['nome_cartao'] . ' (' . $cartao['bandeira'] . ')'); ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>

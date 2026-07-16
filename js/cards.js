@@ -24,6 +24,9 @@ function abrirModalDespesaCartao() {
     document.querySelector('#modalDespesaCartao h3').innerText = 'Adicionar Despesa no Cartão';
     document.getElementById('inputIdDespesaCartao').value = '';
     document.getElementById('formDespesaCartao').reset();
+    
+    // Atualiza a cor do select baseado na primeira opção
+    setTimeout(atualizarCorSelectCartao, 50);
 }
 
 function abrirModalEdicaoDespesaCartao(id, desc, cartaoId, cat, data, valor, parcelas) {
@@ -38,6 +41,9 @@ function abrirModalEdicaoDespesaCartao(id, desc, cartaoId, cat, data, valor, par
     document.getElementById('inputDataCartao').value = data;
     document.getElementById('inputValorCartao').value = valor;
     document.getElementById('inputParcelasCartao').value = parcelas;
+    
+    // Atualiza a cor do select após carregar o valor
+    setTimeout(atualizarCorSelectCartao, 50);
 }
 
 function fecharModalDespesaCartao() {
@@ -94,10 +100,31 @@ function fecharModalConfirmacaoFinal() {
     document.getElementById('modalConfirmacaoFinal').classList.remove('show');
 }
 
+function atualizarCorSelectCartao() {
+    const select = document.getElementById('inputCartaoIdCartao');
+    if (!select) return;
+    const option = select.options[select.selectedIndex];
+    if (option) {
+        const cor = option.getAttribute('data-cor');
+        if (cor) {
+            select.style.color = cor;
+            select.style.borderColor = cor;
+            select.style.fontWeight = '700';
+        } else {
+            select.style.color = 'white';
+            select.style.borderColor = '#4a5b76';
+            select.style.fontWeight = 'normal';
+        }
+    }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const tab = urlParams.get('tab');
     if (tab) {
         mostrarAba(tab);
     }
+    
+    // Inicializa a cor do select de cartões
+    atualizarCorSelectCartao();
 });
