@@ -41,6 +41,17 @@ if (!$finance) {
         'gastos_mes' => 0.00
     ];
 }
+
+// Lógica para Saúde Financeira
+$salarioFinal = (float)($finance['salario'] ?? 0.00);
+$gastosMes = (float)($finance['gastos_mes'] ?? 0.00);
+$gastosCartao = (float)($finance['cartao'] ?? 0.00);
+$gastosTotais = $gastosMes + $gastosCartao;
+$saldoFinal = $salarioFinal - $gastosTotais;
+$estaPositivo = ($saldoFinal >= 0);
+
+// Porcentagem de gastos em relação ao salário
+$porcentagemGastos = $salarioFinal > 0 ? round(($gastosTotais / $salarioFinal) * 100) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -54,6 +65,9 @@ if (!$finance) {
     
     <!-- Biblioteca Feather Icons para renderização de ícones modernos baseados em tags "data-feather" -->
     <script src="https://unpkg.com/feather-icons"></script>
+    
+    <!-- Biblioteca Chart.js para renderização de gráficos modernos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -144,6 +158,50 @@ if (!$finance) {
 
         </section>
 
+        <!-- Seção: Saúde Financeira -->
+        <section class="financial-health">
+            <h2>Saúde Financeira</h2>
+            <div class="health-container">
+                <div class="chart-wrapper">
+                    <canvas id="healthChart"></canvas>
+                    <div class="chart-center-text">
+                        <span class="label">Saldo</span>
+                        <span class="value <?php echo $estaPositivo ? 'text-green' : 'text-red'; ?>">
+                            R$ <?php echo number_format($saldoFinal, 2, ',', '.'); ?>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="health-info">
+                    <h3>A sua vida financeira está <span class="<?php echo $estaPositivo ? 'text-green' : 'text-red'; ?>"><?php echo $estaPositivo ? 'POSITIVA (Saudável)' : 'NEGATIVA (Crítica)'; ?></span></h3>
+                    <p class="description">
+                        <?php if ($salarioFinal == 0 && $gastosTotais == 0): ?>
+                            Nenhum dado financeiro cadastrado até o momento. Por favor, registre o seu salário e adicione despesas ou cartões para visualizar a análise.
+                        <?php elseif ($estaPositivo): ?>
+                            Parabéns! Suas receitas são suficientes para cobrir todas as despesas mensais e faturas de cartão. Sobram <strong>R$ <?php echo number_format($saldoFinal, 2, ',', '.'); ?></strong> para você economizar ou investir.
+                        <?php else: ?>
+                            Atenção! Seus gastos totais excedem seu salário cadastrado em <strong>R$ <?php echo number_format(abs($saldoFinal), 2, ',', '.'); ?></strong>. Recomendamos avaliar seus gastos fixos e reduzir despesas supérfluas.
+                        <?php endif; ?>
+                    </p>
+                    
+                    <div class="financial-bars">
+                        <div class="bar-item">
+                            <span>Receitas (Salário): R$ <?php echo number_format($salarioFinal, 2, ',', '.'); ?> (100%)</span>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar bg-green" style="width: <?php echo $salarioFinal > 0 ? '100%' : '0%'; ?>;"></div>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <span>Gastos Totais: R$ <?php echo number_format($gastosTotais, 2, ',', '.'); ?> (<?php echo $porcentagemGastos; ?>%)</span>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar <?php echo $estaPositivo ? 'bg-orange' : 'bg-red'; ?>" style="width: <?php echo min(100, $porcentagemGastos); ?>%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Seção de Acesso Rápido -->
         <section class="quick-access">
             <h2>Acesso Rápido</h2>
@@ -214,6 +272,59 @@ if (!$finance) {
     <!-- Script lógico que controla as interações do painel -->
     <script src="script.js?v=<?php echo time(); ?>"></script>
     <script src="js/navbar.js?v=<?php echo time(); ?>"></script>
+
+    <!-- Script para renderização do gráfico Chart.js -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('healthChart').getContext('2d');
+            
+            const salario = <?php echo $salarioFinal; ?>;
+            const gastos = <?php echo $gastosTotais; ?>;
+            
+            // Se salário e gastos forem zero, desenhamos um gráfico cinza neutro
+            const dataValues = (salario === 0 && gastos === 0) ? [1] : [salario, gastos];
+            const dataColors = (salario === 0 && gastos === 0) ? ['#334155'] : ['#10b981', '#ef4444'];
+            const dataLabels = (salario === 0 && gastos === 0) ? ['Sem dados'] : ['Receitas (Salário)', 'Gastos Totais'];
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: dataLabels,
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: dataColors,
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    cutout: '80%',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: (salario !== 0 || gastos !== 0),
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>

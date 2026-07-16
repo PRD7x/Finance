@@ -580,6 +580,134 @@ body{
 }
 
 /* ==============================================================================
+   SEÇÃO DE SAÚDE FINANCEIRA
+   ============================================================================== */
+.financial-health {
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+
+.financial-health h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--text-main);
+    letter-spacing: -0.5px;
+}
+
+.health-container {
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-glow);
+    border-radius: 16px;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.chart-wrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+}
+
+.chart-center-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-center-text .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.chart-center-text .value {
+    font-size: 18px;
+    font-weight: 800;
+    margin-top: 2px;
+}
+
+.health-info {
+    flex-grow: 1;
+}
+
+.health-info h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.health-info .description {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.financial-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bar-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.bar-item span {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.progress-bar-container {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bg-green {
+    background: var(--color-success);
+}
+
+.bg-orange {
+    background: var(--color-warning);
+}
+
+.bg-red {
+    background: var(--color-danger);
+}
+
+.text-green {
+    color: var(--color-success);
+}
+
+.text-red {
+    color: var(--color-danger);
+}
+
+/* ==============================================================================
    RESPONSIVIDADE E ADAPTAÇÕES MOBILE GLOBAIS
    ============================================================================== */
 @media (max-width: 768px) {
@@ -654,5 +782,16 @@ body{
     
     .modal-overlay.show .modal-content {
         transform: translateY(0);
+    }
+    
+    /* Regras responsivas de Saúde Financeira */
+    .health-container {
+        flex-direction: column;
+        padding: 20px;
+        gap: 25px;
+    }
+    
+    .chart-wrapper {
+        margin: 0 auto;
     }
 }
