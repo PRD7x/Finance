@@ -212,15 +212,16 @@ function adjustBrightness($hex, $steps) {
                          if (!str_starts_with($cor_banco, '#')) {
                              $mapa = [ 'roxo' => '#8b5cf6', 'azul' => '#3b82f6', 'verde' => '#10b981', 'laranja' => '#f59e0b', 'vermelho' => '#ef4444', 'preto' => '#1e293b' ];
                              $cor_hex = $mapa[strtolower($cor_banco)] ?? '#1e293b';
+                             $cor_css = "cartao-" . strtolower($cor_banco);
                          } else {
                              $cor_hex = $cor_banco;
+                             // Se for hex, mapeia para as classes CSS padrão
+                             $mapa_hex = [ '#8b5cf6' => 'roxo', '#3b82f6' => 'azul', '#10b981' => 'verde', '#f59e0b' => 'laranja', '#ef4444' => 'vermelho', '#1e293b' => 'preto' ];
+                             $cor_nome = $mapa_hex[$cor_hex] ?? 'preto';
+                             $cor_css = "cartao-" . $cor_nome;
                          }
-                         
-                         // Gera o gradiente a partir da cor do cartão
-                         $cor_escura = adjustBrightness($cor_hex, -45);
-                         $estilo_fundo = "background: linear-gradient(135deg, {$cor_hex} 0%, {$cor_escura} 100%);";
                       ?>
-                        <div class="credit-card-ui" style="<?php echo $estilo_fundo; ?>">
+                        <div class="credit-card-ui <?php echo $cor_css; ?>">
                             <div class="card-ui-header">
                                 <div>
                                     <div class="card-ui-name"><?php echo htmlspecialchars($cartao['nome_cartao']); ?></div>
