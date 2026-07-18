@@ -42,6 +42,24 @@ while($row = $result_despesas->fetch_assoc()) {
         $despesas_pendentes[] = $row;
     }
 }
+
+function adjustBrightness($hex, $steps) {
+    $hex = ltrim($hex, '#');
+    if (strlen($hex) == 3) {
+        $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+    }
+    $steps = max(-255, min(255, $steps));
+
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+
+    $r = max(0, min(255, $r + $steps));
+    $g = max(0, min(255, $g + $steps));
+    $b = max(0, min(255, $b + $steps));
+
+    return '#' . str_pad(dechex($r), 2, '0', STR_PAD_LEFT) . str_pad(dechex($g), 2, '0', STR_PAD_LEFT) . str_pad(dechex($b), 2, '0', STR_PAD_LEFT);
+}
 ?>
 
 <!DOCTYPE html>
@@ -57,6 +75,36 @@ while($row = $result_despesas->fetch_assoc()) {
 <body>
 
     <?php include 'components/navbar.php'; ?>
+
+    <?php if (isset($_GET['success'])): ?>
+        <div class="alert alert-success" id="alert-msg" style="margin: 20px 40px 0 40px; padding: 12px 20px; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; border-radius: 8px; color: #10b981; display: flex; align-items: center; gap: 8px; font-size: 14px;">
+            <i data-feather="check-circle" style="width: 18px; height: 18px; min-width: 18px;"></i>
+            <span>
+                <?php 
+                    $success_msg = $_GET['success'];
+                    if ($success_msg === 'deleted') {
+                        echo "Cartão e todas as suas despesas excluídos com sucesso!";
+                    } elseif ($success_msg === 'invoice_paid') {
+                        $count = isset($_GET['count']) ? intval($_GET['count']) : 0;
+                        echo "Fatura paga com sucesso! {$count} compra(s) quitada(s) ou atualizada(s).";
+                    } elseif ($success_msg === '1') {
+                        echo "Despesa salva com sucesso!";
+                    } elseif ($success_msg === '2') {
+                        echo "Cartão atualizado com sucesso!";
+                    } else {
+                        echo "Operação realizada com sucesso!";
+                    }
+                ?>
+            </span>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['info']) && $_GET['info'] === 'no_expenses'): ?>
+        <div class="alert alert-info" id="alert-msg" style="margin: 20px 40px 0 40px; padding: 12px 20px; background: rgba(59, 130, 246, 0.15); border: 1px solid #3b82f6; border-radius: 8px; color: #3b82f6; display: flex; align-items: center; gap: 8px; font-size: 14px;">
+            <i data-feather="info" style="width: 18px; height: 18px; min-width: 18px;"></i>
+            <span>Nenhuma despesa pendente encontrada para o mês selecionado neste cartão.</span>
+        </div>
+    <?php endif; ?>
 
     <div class="header-page">
         <h1><i data-feather="credit-card"></i> Cartões de Crédito</h1>
@@ -156,18 +204,32 @@ while($row = $result_despesas->fetch_assoc()) {
                 </div>
             <?php else: ?>
                 <div class="cards-grid">
-                    <?php foreach($lista_cartoes as $cartao): 
-                        // Aplica a cor vinda do banco ou 'preto' como padrão
-                        $cor_css = "cartao-" . ($cartao['cor'] ?? 'preto');
-                    ?>
-                        <div class="credit-card-ui <?php echo $cor_css; ?>">
+                      <?php foreach($lista_cartoes as $cartao): 
+                         // Normaliza a cor do cartão
+                         $cor_banco = $cartao['cor'] ?? '#1e293b';
+                         if (!str_starts_with($cor_banco, '#')) {
+                             $mapa = [ 'roxo' => '#8b5cf6', 'azul' => '#3b82f6', 'verde' => '#10b981', 'laranja' => '#f59e0b', 'vermelho' => '#ef4444', 'preto' => '#1e293b' ];
+                             $cor_hex = $mapa[strtolower($cor_banco)] ?? '#1e293b';
+                         } else {
+                             $cor_hex = $cor_banco;
+                         }
+                         
+                         // Gera o gradiente a partir da cor do cartão
+                         $cor_escura = adjustBrightness($cor_hex, -45);
+                         $estilo_fundo = "background: linear-gradient(135deg, {$cor_hex} 0%, {$cor_escura} 100%);";
+                      ?>
+                        <div class="credit-card-ui" style="<?php echo $estilo_fundo; ?>">
                             <div class="card-ui-header">
                                 <div>
                                     <div class="card-ui-name"><?php echo htmlspecialchars($cartao['nome_cartao']); ?></div>
                                     <div class="card-ui-brand"><?php echo htmlspecialchars($cartao['bandeira']); ?></div>
                                 </div>
-                                <div style="display:flex; gap:10px; align-items:center;">
-                                    <button class="btn-icon" style="background:rgba(255,255,255,0.2); border:none; color:white; cursor:pointer; padding:5px; border-radius:5px;" title="Editar Cartão" onclick="abrirModalEdicaoCartao(<?php echo $cartao['id']; ?>, '<?php echo htmlspecialchars(addslashes($cartao['nome_cartao'])); ?>', '<?php echo htmlspecialchars(addslashes($cartao['bandeira'])); ?>', <?php echo $cartao['limite_total']; ?>, <?php echo $cartao['dia_fechamento'] ?? 25; ?>, <?php echo $cartao['dia_vencimento']; ?>, '<?php echo htmlspecialchars(addslashes($cartao['cor'])); ?>')"><i data-feather="edit-2" style="width:16px; height:16px;"></i> Editar</button>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <button class="btn-icon" style="background:rgba(255,255,255,0.2); border:none; color:white; cursor:pointer; padding:5px 8px; border-radius:5px; display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;" title="Editar Cartão" onclick="abrirModalEdicaoCartao(<?php echo $cartao['id']; ?>, '<?php echo htmlspecialchars(addslashes($cartao['nome_cartao'])); ?>', '<?php echo htmlspecialchars(addslashes($cartao['bandeira'])); ?>', <?php echo $cartao['limite_total']; ?>, <?php echo $cartao['dia_fechamento'] ?? 25; ?>, <?php echo $cartao['dia_vencimento']; ?>, '<?php echo htmlspecialchars(addslashes($cartao['cor'])); ?>')"><i data-feather="edit-2" style="width:14px; height:14px;"></i> Editar</button>
+                                    
+                                    <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:<?php echo $cor_hex; ?>; border: 1.5px solid white; box-shadow: 0 0 6px <?php echo $cor_hex; ?>;" title="Cor do Cartão"></span>
+                                    
+                                    <a href="delete_card.php?id=<?php echo $cartao['id']; ?>" class="btn-icon" style="background:rgba(255,255,255,0.2); border:none; color:white; cursor:pointer; padding:5px; border-radius:5px; display:inline-flex; align-items:center;" title="Excluir Cartão" onclick="return confirm('Deseja realmente excluir este cartão? Todas as despesas vinculadas a ele serão apagadas permanentemente.');"><i data-feather="trash-2" style="width:14px; height:14px;"></i></a>
                                     <div class="card-ui-chip"></div>
                                 </div>
                             </div>
@@ -181,6 +243,11 @@ while($row = $result_despesas->fetch_assoc()) {
                                 <div class="card-ui-invoice">
                                     <span>Fatura Atual</span>
                                     <strong>R$ <?php echo number_format($cartao['fatura_atual'], 2, ',', '.'); ?></strong>
+                                </div>
+                                <div>
+                                    <button class="btn-primary" style="background:rgba(255,255,255,0.25); border:1px solid rgba(255,255,255,0.3); font-size:12px; padding:6px 12px; border-radius:8px; color:white; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:4px; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.25)'" onclick="abrirModalPagarFatura(<?php echo $cartao['id']; ?>, '<?php echo htmlspecialchars(addslashes($cartao['nome_cartao'])); ?>')">
+                                        <i data-feather="check-square" style="width:14px; height:14px;"></i> Pagar Fatura
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -439,6 +506,59 @@ while($row = $result_despesas->fetch_assoc()) {
                     <a id="btnConfirmarDefinitivo" href="#" class="btn-primary" style="background:#ef4444; border:none; color:white; padding:10px 15px; text-decoration:none;">Sim, confirmar definitivamente</a>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal Pagar Fatura -->
+    <div id="modalPagarFatura" class="modal-overlay" style="z-index:9999;">
+        <div class="modal-content" style="max-width: 450px; background:#1e293b; border:1px solid #334155;">
+            <div class="modal-header" style="border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:12px; display:flex; justify-content:between; align-items:center;">
+                <h3>Pagar Fatura - <span id="pagarFaturaNomeCartao"></span></h3>
+                <button type="button" class="close-btn" style="background:none; border:none; color:#a0aec0; cursor:pointer;" onclick="fecharModalPagarFatura()"><i data-feather="x"></i></button>
+            </div>
+            <form id="formPagarFatura" action="pay_card_invoice.php" method="POST">
+                <input type="hidden" name="cartao_id" id="pagarFaturaCartaoId">
+                <div class="modal-body" style="padding:20px 0;">
+                    <p style="color:#a0aec0; font-size:14px; margin-bottom:20px;">
+                        Selecione o mês e ano correspondente para quitar todas as compras pendentes deste período.
+                    </p>
+                    <div style="display:flex; gap:15px; margin-bottom:15px;">
+                        <div style="flex:1;">
+                            <label style="display:block; margin-bottom:5px; font-size:14px; color:#a0aec0;">Mês</label>
+                            <select name="mes" id="pagarFaturaMes" class="custom-select" required>
+                                <option value="1">Janeiro</option>
+                                <option value="2">Fevereiro</option>
+                                <option value="3">Março</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Maio</option>
+                                <option value="6">Junho</option>
+                                <option value="7">Julho</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Setembro</option>
+                                <option value="10">Outubro</option>
+                                <option value="11">Novembro</option>
+                                <option value="12">Dezembro</option>
+                            </select>
+                        </div>
+                        <div style="flex:1;">
+                            <label style="display:block; margin-bottom:5px; font-size:14px; color:#a0aec0;">Ano</label>
+                            <select name="ano" id="pagarFaturaAno" class="custom-select" required>
+                                <?php 
+                                    $ano_atual = intval(date('Y'));
+                                    for ($i = $ano_atual - 2; $i <= $ano_atual + 2; $i++) {
+                                        $selected = ($i === $ano_atual) ? 'selected' : '';
+                                        echo "<option value='{$i}' {$selected}>{$i}</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:flex-end; gap:12px; padding-top:12px;">
+                    <button type="button" class="btn-secondary" style="background:none; border:none; color:#a0aec0; cursor:pointer;" onclick="fecharModalPagarFatura()">Cancelar</button>
+                    <button type="submit" class="btn-primary" style="background:#10b981; border:none; color:white; padding:10px 15px; border-radius:6px; font-weight:600; cursor:pointer;">Confirmar Pagamento</button>
+                </div>
+            </form>
         </div>
     </div>
 

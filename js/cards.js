@@ -100,6 +100,23 @@ function fecharModalConfirmacaoFinal() {
     document.getElementById('modalConfirmacaoFinal').classList.remove('show');
 }
 
+function abrirModalPagarFatura(id, nome) {
+    document.getElementById('pagarFaturaCartaoId').value = id;
+    document.getElementById('pagarFaturaNomeCartao').innerText = nome;
+    
+    // Define o mês e o ano atuais como padrão
+    const dataAtual = new Date();
+    document.getElementById('pagarFaturaMes').value = dataAtual.getMonth() + 1;
+    document.getElementById('pagarFaturaAno').value = dataAtual.getFullYear();
+    
+    document.getElementById('modalPagarFatura').classList.add('show');
+}
+
+function fecharModalPagarFatura() {
+    document.getElementById('modalPagarFatura').classList.remove('show');
+    document.getElementById('formPagarFatura').reset();
+}
+
 function atualizarCorSelectCartao() {
     const select = document.getElementById('inputCartaoIdCartao');
     if (!select) return;
@@ -127,4 +144,15 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // Inicializa a cor do select de cartões
     atualizarCorSelectCartao();
+    
+    // Auto-oculta o alerta após 4 segundos
+    const alertMsg = document.getElementById('alert-msg');
+    if (alertMsg) {
+        setTimeout(() => {
+            alertMsg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            alertMsg.style.opacity = '0';
+            alertMsg.style.transform = 'translateY(-10px)';
+            setTimeout(() => alertMsg.remove(), 500);
+        }, 4000);
+    }
 });
