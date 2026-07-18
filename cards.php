@@ -227,13 +227,15 @@ function adjustBrightness($hex, $steps) {
                                     <div class="card-ui-name"><?php echo htmlspecialchars($cartao['nome_cartao']); ?></div>
                                     <div class="card-ui-brand"><?php echo htmlspecialchars($cartao['bandeira']); ?></div>
                                 </div>
-                                <div style="display:flex; gap:8px; align-items:center;">
-                                    <button class="btn-icon" style="background:rgba(255,255,255,0.2); border:none; color:white; cursor:pointer; padding:5px 8px; border-radius:5px; display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;" title="Editar Cartão" onclick="abrirModalEdicaoCartao(<?php echo $cartao['id']; ?>, '<?php echo htmlspecialchars(addslashes($cartao['nome_cartao'])); ?>', '<?php echo htmlspecialchars(addslashes($cartao['bandeira'])); ?>', <?php echo $cartao['limite_total']; ?>, <?php echo $cartao['dia_fechamento'] ?? 25; ?>, <?php echo $cartao['dia_vencimento']; ?>, '<?php echo htmlspecialchars(addslashes($cartao['cor'])); ?>')"><i data-feather="edit-2" style="width:14px; height:14px;"></i> Editar</button>
+                                <div style="display:flex; gap:12px; align-items:center;">
+                                    <!-- Botões de Ações juntos -->
+                                    <div style="display:flex; gap:6px; align-items:center;">
+                                        <button class="btn-icon" style="background:rgba(255,255,255,0.2); border:none; color:white; cursor:pointer; padding:5px 8px; border-radius:5px; display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;" title="Editar Cartão" onclick="abrirModalEdicaoCartao(<?php echo $cartao['id']; ?>, '<?php echo htmlspecialchars(addslashes($cartao['nome_cartao'])); ?>', '<?php echo htmlspecialchars(addslashes($cartao['bandeira'])); ?>', <?php echo $cartao['limite_total']; ?>, <?php echo $cartao['dia_fechamento'] ?? 25; ?>, <?php echo $cartao['dia_vencimento']; ?>, '<?php echo htmlspecialchars(addslashes($cartao['cor'])); ?>')"><i data-feather="edit-2" style="width:14px; height:14px;"></i> Editar</button>
+                                        <a href="delete_card.php?id=<?php echo $cartao['id']; ?>" class="btn-icon" style="background:rgba(255,255,255,0.2); border:none; color:white; cursor:pointer; padding:5px 8px; border-radius:5px; display:inline-flex; align-items:center;" title="Excluir Cartão" onclick="return confirm('Deseja realmente excluir este cartão? Todas as despesas vinculadas a ele serão apagadas permanentemente.');"><i data-feather="trash-2" style="width:14px; height:14px;"></i></a>
+                                    </div>
                                     
-                                    <!-- O chip do cartão com a cor de uso do cartão (substituindo a cor dourada original) -->
+                                    <!-- O chip do cartão com a cor de uso do cartão (separado no canto direito) -->
                                     <div class="card-ui-chip" style="background: linear-gradient(135deg, <?php echo $cor_hex; ?> 0%, <?php echo adjustBrightness($cor_hex, -25); ?> 100%); box-shadow: 0 0 6px <?php echo $cor_hex; ?>; border: 1.5px solid rgba(255,255,255,0.25);" title="Cor de uso: <?php echo $cor_hex; ?>"></div>
-                                    
-                                    <a href="delete_card.php?id=<?php echo $cartao['id']; ?>" class="btn-icon" style="background:rgba(255,255,255,0.2); border:none; color:white; cursor:pointer; padding:5px 8px; border-radius:5px; display:inline-flex; align-items:center;" title="Excluir Cartão" onclick="return confirm('Deseja realmente excluir este cartão? Todas as despesas vinculadas a ele serão apagadas permanentemente.');"><i data-feather="trash-2" style="width:14px; height:14px;"></i></a>
                                 </div>
                             </div>
                             <div class="card-ui-body">
