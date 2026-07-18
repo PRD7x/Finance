@@ -161,14 +161,16 @@ function adjustBrightness($hex, $steps) {
                                 <td>
                                     <?php
                                         $parcelas_str = $desp['parcelas'];
-                                        $parcelas_pagas = isset($desp['parcelas_pagas']) ? (int)$desp['parcelas_pagas'] : 0;
+                                        $parcela_atual = 1;
                                         $total_parcelas = 1;
                                         if (strpos($parcelas_str, '/') !== false) {
                                             $partes = explode('/', $parcelas_str);
+                                            $parcela_atual = max(1, intval($partes[0]));
                                             $total_parcelas = max(1, intval(end($partes)));
                                         } else if (preg_match('/^(\d+)/', trim($parcelas_str), $matches)) {
                                             $total_parcelas = max(1, intval($matches[1]));
                                         }
+                                        $parcelas_pagas = $parcela_atual - 1;
                                         
                                         if ($total_parcelas > 1) {
                                             $valor_parcela = $desp['valor_total'] / $total_parcelas;
